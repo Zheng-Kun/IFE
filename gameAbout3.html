@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>gameabout3</title>
+</head>
+<body>
+
+<script>
+    function gameAbout3(fromNum,toNum){
+        fromNum = Math.ceil(fromNum);
+        toNum = Math.floor(toNum);
+        for(let i = fromNum;i <= toNum;i++){
+            if(i%3 == 0 || i.toString().indexOf('3')>=0){
+                console.log("PA");
+            }else{
+                console.log(i);
+            }
+        }
+    }
+gameAbout3(1,100);
+
+</script>
+</body>
+</html>
