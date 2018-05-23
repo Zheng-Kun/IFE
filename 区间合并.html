@@ -1,0 +1,55 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>区间合并</title>
+</head>
+<body>
+	<script>
+		/**
+ * Definition for an interval.
+ * function Interval(start, end) {
+ *     this.start = start;
+ *     this.end = end;
+ * }
+ */
+/**
+ * @param {Interval[]} intervals
+ * @return {Interval[]}
+ */
+    var merge = function(intervals) {
+        //对数组进行排序,起始小的区间在前
+        var len = intervals.length;
+        if(!len){
+            return [];
+        }
+        intervals = intervals.sort(function(x,y){
+            if(x.start!=y.start){
+                return x.start-y.start;
+            }else{
+                return x.end-y.end;
+            }
+        });
+
+        var lens = [];
+        var i = 0;
+        for(i;i<len-1;i++){
+            if(intervals[i].start <= intervals[i+1].start && intervals[i].end >= intervals[i+1].start){
+                intervals[i+1].start = intervals[i].start;
+                intervals[i+1].end = Math.max(intervals[i].end,intervals[i+1].end)
+            }else{
+                lens.push(intervals[i]);
+            }
+        }
+        lens.push(intervals[i]);
+        return lens;
+    };
+
+    console.log(merge([{start:1,end:4},
+    	{start:2,end:6},
+    	{start:7,end:9},
+    	{start:4,end:6},
+    	{start:8,end:11},
+    	{start:14,end:18}]));
+	</script>
+</body>
+</html>
