@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>十进制转二进制</title>
+</head>
+<body>
+    <input id="dec-number" type="number" placeholder="输入十进制非负整数">
+    <input id="bin-bit" type="number" placeholder="输入转化后的二进制数位数">
+    <button id="trans-btn">转化为二进制</button>
+    <p id="result">运算结果</p>
+
+    <script>
+        function dec2bin(decNumber){//将传入的十进制数转换为二进制数后返回
+            if(decNumber != Math.round(decNumber) || decNumber < 0){
+                console.log("参数必须为非负整数")
+                return false;
+            }else{
+                var remainder;
+                var bin = "";
+                while(decNumber){
+                    // remainder = decNumber%2;
+                    bin = decNumber%2 + bin;
+                    decNumber = Math.floor(decNumber/2);
+                }
+                return bin;
+            }
+        }
+        // console.log(dec2bin(5));
+
+        function binfill(binNum,binBit){//将binNum二进制字符串填充0到binBit位后返回
+            if(binNum.length > binBit) {
+                console.error("binBit<binNum.length")
+                return binNum;
+            } else{
+                while(binNum.length < binBit){
+                    binNum = "0" + binNum;
+                }
+                return binNum;
+            }
+        }
+
+        var elTransBtn = document.getElementById("trans-btn");
+        var elResult = document.getElementById("result");
+
+        elTransBtn.addEventListener('click',function () {
+            var decNumber = document.getElementById('dec-number').value;
+            var binBit = document.getElementById("bin-bit").value;
+            elResult.innerText = binfill(dec2bin(decNumber),binBit);
+        })
+    </script>
+</body>
+</html>
