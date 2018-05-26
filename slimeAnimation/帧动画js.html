@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>帧动画</title>
+    <style>
+        #image{
+            width: 480px;
+            height: 480px;
+            border: 1px black solid;
+
+            background:url("K线图/slimeAnimation/帧动画图片.jpg")  0 0 no-repeat;
+        }
+    </style>
+</head>
+<body>
+    <div id="image"></div>
+    <script>
+        var elimage = document.getElementById('image');
+        var animation = setInterval(backgroundChange,80);
+        var height = 0;
+
+        function backgroundChange() {
+
+            height = height == -7680?0:height-480;
+            elimage.style.backgroundPositionY = height+"px";
+            console.log(elimage.style.backgroundPositionY);
+        }
+    </script>
+</body>
+</html>
