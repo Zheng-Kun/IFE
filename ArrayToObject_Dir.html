@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    var menuArr = [
+        [1, "Area1", -1],
+        [2, "Area2", -1],
+        [3, "Area1-1", 1],
+        [4, "Area1-2", 1],
+        [5, "Area2-1", 2],
+        [6, "Area2-2", 2],
+        [7, "Area1-2-3", 4],
+        [8, "Area2-2-1", 6],
+    ];
+
+    (function menuArr2menObj(menuArr){
+        var menuObj = new Object();
+        for(let i = 0; i < menuArr.length; i++){
+            if(menuArr[i][2] == -1){
+                //如果为根目录直接给对象添加属性
+                menuObj[(i+1).toString()] = {
+                    "name":menuArr[i][1]
+                }
+            }else{
+                //若果不为根目录则寻找当前目录的父级目录
+
+                //广度优先遍历查找父级目录
+                var que = [];
+                var node = menuObj;
+                que.push(node);
+                while(que.length){
+                    node = que.shift();
+
+                    if(node[menuArr[i][2].toString()]){
+                        //如果父级目录找到则给对象添加属性之后推出while循环
+                        var nowNode = node[menuArr[i][2].toString()];
+                        nowNode.subMenu = nowNode.subMenu?nowNode.subMenu:{};
+                        nowNode.subMenu[(i+1).toString()] = {
+                            "name":menuArr[i][1]
+                        }
+                        break;
+                    }else{
+                        //否则继续遍历
+                        for(var key in node){
+                            //将当前的目录层下的subMenu加入队列中（如果存在）
+                            if(node[key].subMenu){
+                                que.push(node[key].subMenu);
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+        console.log("目标对象：",menuObj);
+        return menuObj;
+
+    })(menuArr);
+/*    var menuObject = {
+        "1": {
+            name: "Area1",
+            subMenu: {
+                "3": {
+                    name: "Area1-1"
+                },
+                "4": {
+                    name: "Area1-2",
+                    subMenu: {
+                        "7": {
+                            name: "Area1-2-3"
+                        }
+                    }
+                }
+            }
+        }
+
+    }*/
+</script>
+</body>
+</html>
