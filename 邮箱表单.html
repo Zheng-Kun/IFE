@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        html,*{
+            padding: 0;
+            margin: 0;
+        }
+        #email-input{
+            display: block;
+            height: 50px;
+            width: 400px;
+
+            font-size: 20px;
+            line-height: 50px;
+        }
+        #email-sug-wrapper{
+            width: 400px;
+            border: 1px solid #6f6f6f;
+        }
+        #email-sug-wrapper li{
+            list-style: none;
+            height: 50px;
+            overflow: hidden;
+
+            line-height: 50px;
+            font-size: 20px;
+
+        }
+
+        #email-sug-wrapper li:hover{
+            background-color: #BBE0EC;
+            cursor:pointer;
+        }
+
+        /*被用键盘选中是的颜色*/
+        .selected{
+            background-color: #FFC5CF;
+        }
+
+        .email-sug{
+            display: none;
+        }
+        .email-sug-show{
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<input id="email-input" type="email">
+<ul id="email-sug-wrapper" class="email-sug"></ul>
+
+<script>
+
+    var elEmail = document.getElementById('email-input');
+    var elEmailWrapper = document.getElementById('email-sug-wrapper');
+    var elsTipList;
+
+    //给输入框获取焦点
+    elEmail.focus();
+
+    //事件绑定，输入内容变化是调用showWrapper，动态改变提示列表
+    elEmail.addEventListener('input',showWrapper);
+
+    //事件委托，将li的点击事件委托在ul上
+    elEmailWrapper.addEventListener('click',function(ev){
+        var ev = ev || window.event;
+        var target = ev.target || ev.srcElement;
+        if(target.nodeName.toLowerCase()=='li'){
+            updateText(target);
+        }
+    })
+
+    //键盘事件绑定
+    document.addEventListener('keydown',keyEvent);
+
+
+
+    //获取用户输入内容并格式化,返回一个长度为2的数组,分别表示@前和@后的字符串
+    function inputTextChange(){
+        //去掉前后空格
+        var email = elEmail.value.trim();
+        var inputFix = "";
+        //处理输入中有@的情况
+        if(email.indexOf("@")>=0){
+            //获取@符号之后的字符串
+            inputFix = email.slice(email.indexOf("@")+1).trimRight();
+
+            //获取@符号之前的字符串
+            email = email.slice(0,email.indexOf("@"));
+        }
+        return [email,inputFix];
+    }
+
+    //根据@后的字符情况返回符合条件的inputfix数组
+    function myPostfixList(inputfix){
+        // 邮箱后缀List参考
+        var postfixList = ['163.com', 'gmail.com', '126.com', 'qq.com', '263.net'];
+        var newList = [];
+        if(inputfix.length == 0){
+            return postfixList;
+        }else{
+            postfixList.forEach(function(element){
+                if(element.indexOf(inputfix) == 0){
+                    newList.push(element);
+                }
+            });
+            var resultList = newList.length > 0?newList:postfixList;
+            return resultList;
+        }
+
+    }
+
+    //创建(清空)并显示(隐藏)提示列表
+    function showWrapper(){
+        //获取@前后的字符串
+        var email = inputTextChange()[0];
+        var inputfix = inputTextChange()[1];
+        //获取需要添加进提示列表的邮箱后缀数组
+        var postfixList = myPostfixList(inputfix);
+
+        if(email.length>0){
+            //清空列表
+            elEmailWrapper.innerHTML = '';
+
+            //遍历邮箱后缀列表，创建提示列表
+            postfixList.forEach(function(element){
+                var elFix = document.createElement('li');
+                elFix.innerText = email + "@" +element;
+                elEmailWrapper.appendChild(elFix);
+            });
+
+            // 显示提示列表
+            elEmailWrapper.classList.add('email-sug-show');
+            elsTipList = elEmailWrapper.querySelectorAll('li');
+            moveSelectedTip(0);
+        }else{
+            //清空列表
+            elEmailWrapper.innerHTML = '';
+            // 显示提示列表
+            elEmailWrapper.classList.remove('email-sug-show');
+        }
+    }
+
+
+
+    //更新输入框文本
+    function updateText(target){
+        elEmail.value = target.innerText;
+        elEmailWrapper.classList.remove('email-sug-show');
+        elEmail.focus();
+    }
+
+    //默认被选中的提示li的序号.
+    var nowSelectTipIndex = 0;
+
+    //按键事件
+    function keyEvent(ev){
+
+        //获取提示列表ul的display属性值
+        var ListDisplay = window.getComputedStyle(elEmailWrapper,null).getPropertyValue("display");
+        //提示li的最大Index
+        if(elsTipList){
+            var maxTipIndex = elsTipList.length - 1;
+        }
+
+        if(ev.keyCode == 27){
+            //按Esc
+            elEmail.select();
+            return;
+        }
+
+        //提示列表是否显示,
+        if(ListDisplay == "block") {
+
+            //ArrowLeft37,ArrowRight39,ArrowUp38,ArrowDown40,Escape27,Enter13
+            if (ev.keyCode == 38){
+                //按上键
+                if(nowSelectTipIndex == 0){
+                    //如果当前被选中的是第一个
+                    nowSelectTipIndex = maxTipIndex;
+
+                }else{
+                    nowSelectTipIndex --;
+                }
+                moveSelectedTip(nowSelectTipIndex);
+            }else if(ev.keyCode == 40){
+                //按下键
+                if(nowSelectTipIndex == maxTipIndex){
+                    //如果当前被选中的是最后一个
+                    nowSelectTipIndex = 0;
+                }else{
+                    nowSelectTipIndex++;
+                }
+                moveSelectedTip(nowSelectTipIndex);
+            }else if(ev.keyCode == 13){
+                //按回车
+                updateText(elsTipList[nowSelectTipIndex]);
+            }
+        }
+    }
+
+    //实现根据选中的序号改变颜色
+    function moveSelectedTip(nowSelectTipIndex){
+        for(let i = 0;i<elsTipList.length;i++){
+            elsTipList[i].classList.remove('selected');
+        }
+        elsTipList[nowSelectTipIndex].classList.add('selected');
+    };
+
+
+    //清除字符串前后空格函数
+    String.prototype.trim = function () {
+        return this.replace(/^\s+(.*?)\s+$/, "$1");
+    }
+    //清除字符串后空格函数
+    String.prototype.trimRight = function () {
+        return this.replace(/\s+$/,"");
+    }
+
+</script>
+</body>
+</html>
