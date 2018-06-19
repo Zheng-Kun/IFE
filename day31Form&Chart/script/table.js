@@ -1,6 +1,4 @@
 
-
-
 //获取用户选择的数据
 function getSelectedData(){
     var regionList = getSelectedList("region");
@@ -74,10 +72,12 @@ function creatTable(data){
         if(productNum == 1 || (regionNum >1 && productNum >1)){
             if((i-1)%regionNum == 0){
                 elsRow[i].firstChild.setAttribute('rowspan',regionNum);
+                elsRow[i].firstChild.classList.add("product");
             }
         }else{
             if((i-1)%productNum == 0){
                 elsRow[i].firstChild.setAttribute('rowspan',productNum );
+                elsRow[i].firstChild.classList.add("region");
             }
         }
     }
