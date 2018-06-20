@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>tableEdit</title>
+    <style>
+        *{
+            box-sizing: border-box;
+        }
+        #chart-box{
+            display:flex;
+            vertical-align: center;
+            justify-content: space-around;
+            width: 100%;
+
+        }
+        #bar-box,#line-box{
+            vertical-align: center;
+        }
+        #data-table-box table{
+            border-collapse: collapse;
+            margin: 0 auto;
+            text-align: center;
+            width:80%;
+        }
+        #data-table-box table th,
+        #data-table-box table td{
+            border: #7ffdff 1px solid;
+            padding: 0;
+        }
+        #data-table-box table th{
+            background-color: #00aeef;
+            color: white;
+        }
+        #data-table-box table tr:nth-child(2n){
+            background-color: #BBFFFF;
+        }
+        #data-table-box table tr:hover{
+            background-color: #B2B2EC;
+        }
+
+        /*数据输入单元格与输入框*/
+        #data-table-box table .data-value-td{
+            position: relative;
+            padding: 0;
+            width: 6%;
+            /*display: inline-block;*/
+        }
+        #data-table-box table .data-value-input{
+            display: inline-block;
+            line-height: 30px;
+            width: 100%;
+            border: 0;
+            background-color: transparent;
+            padding-left: 1em;
+        }
+        #data-table-box table .data-value-td:hover{
+            background: url("images/编辑.png") 70% 50% no-repeat;
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body>
+<div id="container">
+
+    <!--选择部分-->
+    <div id="select-item">
+        <p id="region-select">
+            <span>请选择地区：</span>
+        </p>
+        <p id="product-select">
+            <span>请选择商品：</span>
+        </p>
+    </div>
+
+    <div id="data-table-box"></div>
+
+
+    <h2 id="chart-header"></h2>
+    <div id="chart-box">
+        <div id="bar-box"></div>
+        <div id="line-box"></div>
+    </div>
+</div>
+
+<script src="script/localStorage.js"></script>
+<script src="script/dataScript.js"></script>
+<script src="script/checkBox.js"></script>
+<script src="script/table.js"></script>
+<script src="script/bar.js"></script>
+<script src="script/line.js"></script>
+<script src="script/createBarAndLine.js"></script>
+<script src="script/editData.js"></script>
+<script src="script/historyState.js"></script>
+</body>
+</html>
